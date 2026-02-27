@@ -4,17 +4,15 @@ import (
 	"checkhost-backend/internal/routes/public/info/ipapi"
 	"checkhost-backend/internal/routes/public/info/ipinfo"
 	"checkhost-backend/pkg/logging"
+	"strings"
 
 	"github.com/gofiber/fiber/v3"
 )
 
 func Info(c fiber.Ctx) error {
-
-	host := c.Query("host")
-	if host == "" {
-		return c.Status(fiber.StatusBadRequest).JSON(map[string]string{
-			"error": "Missing 'host' query parameter",
-		})
+	var host string
+	if strings.Contains(c.Host(), "localhost") {
+		host = "1.1.1.1"
 	}
 	ipinfo, err := ipinfo.GetIPInfo(host)
 	if err != nil {

@@ -12,7 +12,6 @@ func Logging(c fiber.Ctx) error {
 	err := c.Next()
 
 	latency := time.Since(start)
-
 	logging.Logger.Info().
 		Str("latency", latency.String()).
 		Str("path", string(c.Request().URI().Path())).Int("status", c.Response().StatusCode()).
