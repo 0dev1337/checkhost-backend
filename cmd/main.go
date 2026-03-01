@@ -2,6 +2,7 @@ package main
 
 import (
 	"checkhost-backend/internal/routes"
+	"log"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/gofiber/fiber/v3/middleware/cors"
@@ -9,11 +10,12 @@ import (
 
 func main() {
 	app := fiber.New()
+
+	// cors should be configured before setting up routes and use New()
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: []string{"*"},
-		AllowMethods: []string{"GET", "POST", "PUT", "DELETE"},
-		AllowHeaders: []string{"Origin", "Content-Type", "Accept"},
 	}))
+
 	routes.SetupRoutes(app)
-	app.Listen(":3001")
+	log.Fatal(app.Listen(":3001"))
 }

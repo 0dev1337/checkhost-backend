@@ -9,9 +9,7 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-var (
-	Logger zerolog.Logger
-)
+var Logger zerolog.Logger
 
 func init() {
 	logConfig := zerolog.ConsoleWriter{
@@ -20,18 +18,19 @@ func init() {
 	}
 
 	logConfig.FormatLevel = func(i interface{}) string {
-		if i == "info" {
+		switch i {
+		case "info":
 			return "\x1b[38;5;120mINF\x1b[0m \x1b[38;5;239m>\x1b[0m"
-		} else if i == "debug" {
+		case "debug":
 			return "\x1b[38;5;221mDBG\x1b[0m \x1b[38;5;239m>\x1b[0m"
-		} else if i == "warn" {
+		case "warn":
 			return "\x1b[38;5;203mWRN\x1b[0m \x1b[38;5;239m>\x1b[0m"
-		} else if i == "error" {
-			return "\033[1m\x1b[38;5;203mWRN\x1b[0m\033[0m \x1b[38;5;239m>\x1b[0m"
-		} else if i == "fatal" {
+		case "error":
+			return "\033[1m\x1b[38;5;196mERR\x1b[0m\033[0m \x1b[38;5;239m>\x1b[0m"
+		case "fatal":
 			return "\033[1m\x1b[38;5;209mFTL\x1b[0m\033[0m \x1b[38;5;239m>\x1b[0m"
-		} else {
-			return i.(string)
+		default:
+			return fmt.Sprintf("%v", i)
 		}
 	}
 
@@ -39,16 +38,13 @@ func init() {
 		return fmt.Sprintf("\u001B[0m%v \u001B[38;5;239m>\u001B[0m", i)
 	}
 
-	zerolog.CallerMarshalFunc = func(pc uintptr, file string, line int) string {
-		short := file
+	zerolog.CallerMarshalFunc = func(_ uintptr, file string, line int) string {
 		for i := len(file) - 1; i > 0; i-- {
 			if file[i] == '/' {
-				short = file[i+1:]
+				file = file[i+1:]
 				break
 			}
 		}
-		file = short
-
 		return fmt.Sprintf("%v:%v", file, line)
 	}
 
@@ -61,11 +57,10 @@ func init() {
 	}
 
 	logConfig.FormatErrFieldValue = func(i interface{}) string {
-		return i.(string)
+		return fmt.Sprintf("%v", i)
 	}
 
 	log.Logger = log.Output(logConfig).With().Caller().Logger()
 	zerolog.SetGlobalLevel(zerolog.GlobalLevel())
-
 	Logger = log.Logger
 }
