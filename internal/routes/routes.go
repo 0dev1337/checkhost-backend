@@ -12,4 +12,5 @@ func SetupRoutes(app *fiber.App) {
 	api.Use(middleware.Logging)
 	api.Get("/ipinfo", handler.Info)
 	api.Get("/whois", handler.Whois)
+	api.Get("/ping", handler.Ping)
 }
