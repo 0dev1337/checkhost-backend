@@ -4,9 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"net/url"
+	"time"
 )
 
-type IPAPI struct {
+var httpClient = &http.Client{Timeout: 10 * time.Second}
+
+type Info struct {
 	IP          string  `json:"query"`
 	Hostname    string  `json:"hostname"`
 	City        string  `json:"city"`
@@ -23,21 +27,8 @@ type IPAPI struct {
 	ASN         string  `json:"as"`
 }
 
-type IPInfo struct {
-	IP       string `json:"ip"`
-	Hostname string `json:"hostname"`
-	City     string `json:"city"`
-	Region   string `json:"region"`
-	Country  string `json:"country"`
-	Location string `json:"loc"`
-	Org      string `json:"org"`
-	Postal   string `json:"postal"`
-	Timezone string `json:"timezone"`
-}
-
-func Fetch(ip string) (*IPAPI, error) {
-	fmt.Println(ip)
-	resp, err := http.Get(fmt.Sprintf("http://ip-api.com/json/%s", ip))
+func Fetch(ip string) (*Info, error) {
+	resp, err := httpClient.Get(fmt.Sprintf("http://ip-api.com/json/%s", url.PathEscape(ip)))
 	if err != nil {
 		return nil, err
 	}
@@ -47,7 +38,7 @@ func Fetch(ip string) (*IPAPI, error) {
 		return nil, fmt.Errorf("ipapi: upstream returned status %d", resp.StatusCode)
 	}
 
-	var info IPAPI
+	var info Info
 	if err := json.NewDecoder(resp.Body).Decode(&info); err != nil {
 		return nil, err
 	}

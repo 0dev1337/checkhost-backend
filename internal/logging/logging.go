@@ -17,7 +17,7 @@ func init() {
 		TimeFormat: time.Kitchen,
 	}
 
-	logConfig.FormatLevel = func(i interface{}) string {
+	logConfig.FormatLevel = func(i any) string {
 		switch i {
 		case "info":
 			return "\x1b[38;5;120mINF\x1b[0m \x1b[38;5;239m>\x1b[0m"
@@ -34,7 +34,7 @@ func init() {
 		}
 	}
 
-	logConfig.FormatCaller = func(i interface{}) string {
+	logConfig.FormatCaller = func(i any) string {
 		return fmt.Sprintf("\u001B[0m%v \u001B[38;5;239m>\u001B[0m", i)
 	}
 
@@ -48,19 +48,18 @@ func init() {
 		return fmt.Sprintf("%v:%v", file, line)
 	}
 
-	logConfig.FormatFieldName = func(i interface{}) string {
+	logConfig.FormatFieldName = func(i any) string {
 		return fmt.Sprintf("\u001B[38;5;239m%v=\u001B[0m", i)
 	}
 
-	logConfig.FormatErrFieldName = func(i interface{}) string {
+	logConfig.FormatErrFieldName = func(i any) string {
 		return fmt.Sprintf("\u001B[38;5;239m%v=\u001B[0m", i)
 	}
 
-	logConfig.FormatErrFieldValue = func(i interface{}) string {
+	logConfig.FormatErrFieldValue = func(i any) string {
 		return fmt.Sprintf("%v", i)
 	}
 
 	log.Logger = log.Output(logConfig).With().Caller().Logger()
-	zerolog.SetGlobalLevel(zerolog.GlobalLevel())
 	Logger = log.Logger
 }

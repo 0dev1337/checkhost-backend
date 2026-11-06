@@ -3,7 +3,7 @@ package middleware
 import (
 	"time"
 
-	"checkhost-backend/pkg/logging"
+	"checkhost-backend/internal/logging"
 
 	"github.com/gofiber/fiber/v3"
 )
